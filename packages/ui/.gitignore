@@ -1,0 +1,7 @@
+# NativeWind
+nativewind.d.ts
+nativewind-env.d.ts
+
+# expo
+.expo/
+expo-env.d.ts

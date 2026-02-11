@@ -6,14 +6,10 @@
 node_modules
 dist
 
-# NativeWind
-nativewind.d.ts
-
-# expo
-.expo/
-expo-env.d.ts
-
 # pnpm
 .pnpm-store/
 pm-debug.log*
 .pnpm-debug.log*
+
+# nx
+.nx

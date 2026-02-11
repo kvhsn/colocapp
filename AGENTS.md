@@ -5,11 +5,45 @@ This document defines the specialized roles, technical constraints, and mandator
 ## 📌 Project Overview
 
 - **Goal:** Eliminate household friction by managing shared tasks, balancing expenses (Tricount-style), and coordinating groceries.
-- **Stack:** \* **Frontend:** React Native (iOS/Android)
-  - **Backend:** Node.js (REST/GraphQL)
-  - **Database:** PostgreSQL
+- **Stack:**
+  - **Monorepo:** Nx + pnpm workspaces
+  - **Frontend:** Expo (SDK 54) + React Native + Expo Router + NativeWind
+  - **Backend:** Hono + Node.js + TypeScript
+  - **Database:** PostgreSQL + Prisma
   - **Design:** Figma via Stitch
 - **Core Logic:** Invitation-based household joining, multi-user task assignment, and monthly debt equalization.
+
+---
+
+## 📦 Monorepo Architecture
+
+The project uses **Nx** with **pnpm workspaces** for scalable monorepo management.
+
+### Workspace Structure
+
+```
+colocapp/
+├── packages/
+│   ├── ui/          # @colocapp/ui - Expo React Native app
+│   └── api/         # @colocapp/api - Hono backend server
+├── nx.json          # Nx configuration & caching
+├── pnpm-workspace.yaml
+└── package.json     # Root orchestration
+```
+
+### Package Scripts
+
+Root-level commands run across all workspaces via Nx:
+
+- `pnpm start` - Start all packages
+- `pnpm build` - Build all packages
+- `pnpm lint` - Lint all packages
+- `pnpm format` - Format all packages
+
+Workspace-specific commands:
+
+- `nx run @colocapp/ui:start` - Start UI only
+- `nx run @colocapp/api:dev` - Start API dev server
 
 ---
 
@@ -19,39 +53,52 @@ Every agent must utilize these tools for any technical documentation or implemen
 
 1.  **React Native Expertise:** For any mobile code, styling, or architecture, use:
     `skill /react-native-best-practices:react-native-best-practices`
-2.  **Documentation & Research:** To fetch up-to-date documentation on libraries (Prisma, React Navigation, etc.), use:
+2.  **Documentation & Research:** To fetch up-to-date documentation on libraries (Prisma, Hono, Expo Router, etc.), use:
     `mcp context7`
+3.  **Monorepo Management:** Use `nx` for running tasks across packages and `pnpm` for dependency management.
 
 ---
+
+## 📦 0. Monorepo Maintainer
+
+**Focus:** Workspace health, dependency management, and CI/CD.
+**Directives:**
+
+- Maintain `nx.json`, `pnpm-workspace.yaml`, and root `package.json`.
+- Ensure consistent linting and formatting across all packages.
+- Optimize build times and Nx cache usage.
+- Manage shared configurations (TSConfig, ESLint, Prettier).
 
 ## 🏗️ 1. The Architect (Tech Lead)
 
 **Focus:** System integrity, security, and scalability.
 **Directives:**
 
-- Design and maintain the **PostgreSQL schema** (Users, Households, Tasks, Expenses, Splits).
+- Design and maintain the **PostgreSQL schema** via Prisma (Users, Households, Tasks, Expenses, Splits).
 - Enforce authentication flows and role-based access (Admin vs. Member).
 - Use `mcp context7` to validate library choices against the 2026 tech landscape.
+- Oversee the integration between `@colocapp/api` and `@colocapp/ui`.
 
 ## 🚀 2. Backend Developer & DBA
 
 **Focus:** API development and database performance.
 **Directives:**
 
-- Implement the **Debt Settlement Algorithm**: Calculate "who owes what" based on `Expense_Splits`.
-- Handle real-time synchronization for Chat and Notifications.
-- Manage DB migrations and ensure relational integrity between Users and Households.
+- Implement the **Debt Settlement Algorithm** in the Hono backend.
+- Handle real-time synchronization for Chat and Notifications using Hono's middleware and WebSocket support.
+- Manage Prisma migrations and ensure relational integrity between Users and Households.
 
-## 📱 Mobile Frontend Developer
+## 📱 3. Mobile Frontend Developer
 
 **Focus:** UI/UX implementation and native performance.
 **Directives:**
 
 - **Mandatory:** Apply `skill /react-native-best-practices:react-native-best-practices` to all components.
-- Implement a seamless **Onboarding flow** (handling the `has_seen_onboarding` flag).
-- Build the interactive expense logger and shared grocery list with offline-first support.
+- Implement a seamless **Onboarding flow** using Expo Router.
+- Build the interactive expense logger and shared grocery list with NativeWind for styling.
+- Ensure offline-first support and smooth navigation.
 
-## 📋 Product Owner / UX Specialist
+## 📋 4. Product Owner / UX Specialist
 
 **Focus:** Feature relevance and user friction reduction.
 **Directives:**
@@ -59,6 +106,23 @@ Every agent must utilize these tools for any technical documentation or implemen
 - Verify that task assignment logic doesn't create "chore-guilt."
 - Define the "Wallet" and "Equalization" rules for the end-of-month settlement.
 - Ensure the invitation code system is foolproof for non-technical users.
+
+---
+
+## 🚀 Development Workflow
+
+### Common Commands
+
+- `pnpm install` - Install all dependencies
+- `pnpm build` - Build all packages via Nx
+- `pnpm lint` - Lint all packages
+- `pnpm format` - Format all packages
+- `nx run @colocapp/ui:start` - Start the Expo app
+- `nx run @colocapp/api:dev` - Start the Hono API in dev mode
+
+### Commit Convention
+
+Use atomic commits with clear descriptions. Reference issues if applicable.
 
 ---
 

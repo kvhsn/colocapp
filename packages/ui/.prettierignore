@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Native
+ios/
+android/
+
+# Generated
+expo-env.d.ts
