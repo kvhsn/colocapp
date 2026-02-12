@@ -1,0 +1,19 @@
+{
+  "name": "@colocapp/shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src",
+    "format": "prettier --write src"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.25.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.55.0"
+  }
+}
