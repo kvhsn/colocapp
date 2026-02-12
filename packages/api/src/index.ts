@@ -6,6 +6,7 @@ import withPrisma from './libs/prisma.js';
 import { zValidator } from '@hono/zod-validator';
 import { LoginSchema, RegisterSchema } from '@colocapp/shared';
 import { hashPassword, verifyPassword } from './libs/password.js';
+import withAuth, { generateToken } from './libs/auth.js';
 
 type ContextWithPrisma = {
   Variables: {
@@ -29,7 +30,7 @@ app.post('/register', withPrisma, zValidator('json', RegisterSchema), async (c) 
     },
   });
 
-  return c.status(201);
+  return c.json({ success: true }, 201);
 });
 
 app.post('/login', withPrisma, zValidator('json', LoginSchema), async (c) => {
@@ -39,14 +40,20 @@ app.post('/login', withPrisma, zValidator('json', LoginSchema), async (c) => {
     where: {
       email: data.email,
     },
-    select: { password: true },
+    select: { password: true, id: true },
   });
 
   if (!user || !(await verifyPassword(data.password, user.password))) {
     return c.json({ error: 'Invalid credentials' }, 401);
   }
 
-  return c.status(200);
+  const token = await generateToken(user.id);
+
+  return c.json({ token });
+});
+
+app.get('/auth', withAuth, (c) => {
+  return c.json({ status: 'ok' });
 });
 
 app.get('/health', (c) => {
